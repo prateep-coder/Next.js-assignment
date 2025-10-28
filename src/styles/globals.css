@@ -5,8 +5,6 @@
   --foreground: #171717;
 }
 
-
-
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -27,21 +25,18 @@ body {
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
- 
 }
 
 .line-clamp-2 {
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  
 }
 
 .line-clamp-3 {
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-
 }
 
 /* Custom scrollbar */

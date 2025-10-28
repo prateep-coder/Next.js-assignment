@@ -1,0 +1,50 @@
+[
+  {
+    "id": "1",
+    "name": "MacBook Pro 16-inch",
+    "slug": "macbook-pro",
+    "description": "Apple MacBook Pro with M2 chip, 16GB RAM, 1TB SSD. Perfect for professionals and creatives.",
+    "price": 249999,
+    "category": "Laptops",
+    "inventory": 8,
+    "lastUpdated": "2024-01-20T10:30:00.000Z",
+    "rating": 4.8,
+    "reviews": 124
+  },
+  {
+    "id": "2",
+    "name": "iPhone 15 Pro",
+    "slug": "iphone-15-pro",
+    "description": "Latest iPhone with Titanium design and advanced camera system.",
+    "price": 134900,
+    "category": "Phones",
+    "inventory": 3,
+    "lastUpdated": "2024-01-20T14:20:00.000Z",
+    "rating": 4.7,
+    "reviews": 89
+  },
+  {
+    "id": "3",
+    "name": "Sony WH-1000XM5",
+    "slug": "sony-headphones",
+    "description": "Industry-leading noise canceling wireless headphones.",
+    "price": 29990,
+    "category": "Audio",
+    "inventory": 15,
+    "lastUpdated": "2024-01-19T09:15:00.000Z",
+    "rating": 4.6,
+    "reviews": 67
+  },
+  {
+    "id": "4",
+    "name": "Samsung 4K Monitor",
+    "slug": "samsung-monitor",
+    "description": "32-inch 4K gaming monitor with 165Hz refresh rate.",
+    "price": 67900,
+    "category": "Monitors",
+    "inventory": 5,
+    "lastUpdated": "2024-01-20T16:45:00.000Z",
+    "rating": 4.5,
+    "reviews": 42
+  }
+]
