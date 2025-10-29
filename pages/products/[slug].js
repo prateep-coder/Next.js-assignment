@@ -2,8 +2,42 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Layout from '../../components/Layout'
 
-// Import data directly
-import productsData from '../../data/products.json'
+// Direct data - no import
+const productsData = [
+  {
+    "id": "1",
+    "name": "MacBook Pro 16\"",
+    "description": "Supercharged by M2 Pro and M2 Max, MacBook Pro takes its power and efficiency further than ever.",
+    "price": 249999,
+    "category": "Laptops",
+    "inventory": 15,
+    "slug": "macbook-pro",
+    "rating": 4.8,
+    "reviews": 124
+  },
+  {
+    "id": "2",
+    "name": "iPhone 15 Pro",
+    "description": "Forged from titanium and featuring the groundbreaking A17 Pro chip.",
+    "price": 134900,
+    "category": "Phones",
+    "inventory": 8,
+    "slug": "iphone-15-pro",
+    "rating": 4.6,
+    "reviews": 89
+  },
+  {
+    "id": "3",
+    "name": "Sony WH-1000XM5",
+    "description": "Industry-leading noise cancellation with premium sound quality.",
+    "price": 29990,
+    "category": "Audio",
+    "inventory": 25,
+    "slug": "sony-headphones",
+    "rating": 4.7,
+    "reviews": 67
+  }
+]
 
 export default function ProductDetail({ product }) {
   const router = useRouter()
@@ -86,16 +120,22 @@ export async function getStaticPaths() {
 
   return {
     paths,
-    fallback: true,
+    fallback: false // Changed to false for better build
   }
 }
 
 export async function getStaticProps({ params }) {
   const product = productsData.find(p => p.slug === params.slug)
 
+  if (!product) {
+    return {
+      notFound: true
+    }
+  }
+
   return {
     props: {
-      product: product || null
+      product
     }
   }
 }

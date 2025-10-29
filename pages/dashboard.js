@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react'
 import Layout from '../components/Layout'
 
-// Import data directly
-import productsData from '../data/products.json'
-
 export default function Dashboard() {
   const [products, setProducts] = useState([])
 
-  // Client-side only - won't run during build
+  // Client-side fetch only
   useEffect(() => {
-    setProducts(productsData)
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => setProducts(data.data || []))
   }, [])
 
   const formatPrice = (price) => {
