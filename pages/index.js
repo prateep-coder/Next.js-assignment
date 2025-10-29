@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 
-// Static data - no API calls
+// Static data
 const productsData = [
   {
     id: "1",
@@ -125,7 +125,7 @@ export default function Home() {
                   </span>
                 </div>
 
-                <Link href={`/products/${product.slug}`}>
+                <Link href={`/products/${product.slug}/`}>
                   <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold transition-colors">
                     View Details
                   </button>
