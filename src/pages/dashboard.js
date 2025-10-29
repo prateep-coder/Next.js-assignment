@@ -1,158 +1,121 @@
-import Link from "next/link";
+import { useEffect, useState } from "react";
+import Layout from "../components/Layout";
 
-export default function Dashboard({ products, stats }) {
-  const lowStock = products.filter((p) => p.inventory < 5);
+export default function Dashboard() {
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((data) => setProducts(data.data || []));
+  }, []);
 
-  const formatPrice = (price) => {
-    return `₹${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
-  };
+  const formatPrice = (price) =>
+    `₹${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+
+  const totalValue = formatPrice(
+    products.reduce((sum, p) => sum + p.price * p.inventory, 0)
+  );
+  const lowStockCount = products.filter(
+    (p) => p.inventory > 0 && p.inventory < 5
+  ).length;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="gradient-bg text-white shadow-lg">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex justify-between items-center">
-            <Link href="/" className="text-2xl font-bold hover:text-blue-200">
-              🛍️ TechStore
-            </Link>
-            <nav className="flex gap-6">
-              <Link href="/" className="hover:text-blue-200">
-                Home
-              </Link>
-              <Link
-                href="/dashboard"
-                className="font-semibold border-b-2 border-white pb-1"
-              >
-                Dashboard
-              </Link>
-              <Link href="/admin" className="hover:text-blue-200">
-                Admin
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
-
-      <div className="container mx-auto px-4 py-8">
+    <Layout>
+      {/* Dashboard Content */}
+      <div className="container mx-auto px-4 py-10">
+        <h1 className="text-3xl font-bold mb-8 text-blue-800 drop-shadow">
+          Dashboard
+        </h1>
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-lg shadow text-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          <div className="bg-white p-6 rounded-xl shadow-lg text-center border border-blue-100">
             <div className="text-3xl font-bold text-blue-600">
-              {stats.totalProducts}
+              {products.length}
             </div>
-            <div className="text-gray-600">Total Products</div>
+            <div className="text-gray-500">Total Products</div>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow text-center">
-            <div className="text-3xl font-bold text-red-600">
-              {stats.lowStock}
+          <div className="bg-white p-6 rounded-xl shadow-lg text-center border border-yellow-100">
+            <div className="text-3xl font-bold text-yellow-600">
+              {lowStockCount}
             </div>
-            <div className="text-gray-600">Low Stock</div>
+            <div className="text-gray-500">Low Stock</div>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow text-center">
+          <div className="bg-white p-6 rounded-xl shadow-lg text-center border border-green-100">
             <div className="text-3xl font-bold text-green-600">
-              {formatPrice(stats.totalValue)}
+              {totalValue}
             </div>
-            <div className="text-gray-600">Total Value</div>
+            <div className="text-gray-500">Total Value</div>
           </div>
         </div>
-
-        {/* Low Stock Alert */}
-        {lowStock.length > 0 && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-            <h3 className="font-semibold text-yellow-800 mb-3">
-              ⚠️ Low Stock Alert
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {lowStock.map((product) => (
-                <div
-                  key={product.id}
-                  className="bg-white rounded p-3 border border-yellow-200"
-                >
-                  <div className="font-medium">{product.name}</div>
-                  <div className="text-red-600 text-sm">
-                    Only {product.inventory} left
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* Products Table */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-semibold">All Products</h3>
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+          <div className="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50">
+            <h3 className="text-lg font-semibold text-gray-700">
+              All Products
+            </h3>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full text-sm">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left font-semibold">Product</th>
-                  <th className="px-6 py-3 text-left font-semibold">Price</th>
-                  <th className="px-6 py-3 text-left font-semibold">Stock</th>
-                  <th className="px-6 py-3 text-left font-semibold">Status</th>
+                  <th className="px-6 py-3 text-left font-semibold text-gray-600">
+                    Product
+                  </th>
+                  <th className="px-6 py-3 text-left font-semibold text-gray-600">
+                    Price
+                  </th>
+                  <th className="px-6 py-3 text-left font-semibold text-gray-600">
+                    Stock
+                  </th>
+                  <th className="px-6 py-3 text-left font-semibold text-gray-600">
+                    Status
+                  </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
-                {products.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50">
+              <tbody className="divide-y divide-gray-100">
+                {products.map((p) => (
+                  <tr key={p.id} className="hover:bg-blue-50 transition">
                     <td className="px-6 py-4">
-                      <div className="font-medium">{product.name}</div>
-                      <div className="text-sm text-gray-500">
-                        {product.category}
-                      </div>
+                      <div className="font-medium text-gray-800">{p.name}</div>
+                      <div className="text-xs text-gray-400">{p.category}</div>
                     </td>
                     <td className="px-6 py-4 font-semibold">
-                      {formatPrice(product.price)}
+                      {formatPrice(p.price)}
                     </td>
-                    <td className="px-6 py-4">{product.inventory}</td>
+                    <td className="px-6 py-4">{p.inventory}</td>
                     <td className="px-6 py-4">
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          product.inventory > 10
-                            ? "bg-green-100 text-green-800"
-                            : product.inventory > 0
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-red-100 text-red-800"
+                        className={`px-2 py-1 rounded-full text-xs font-semibold
+                        ${
+                          p.inventory > 10
+                            ? "bg-green-100 text-green-700"
+                            : p.inventory > 0
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-red-100 text-red-700"
                         }`}
                       >
-                        {product.inventory > 10
+                        {p.inventory > 10
                           ? "In Stock"
-                          : product.inventory > 0
+                          : p.inventory > 0
                           ? "Low Stock"
                           : "Out of Stock"}
                       </span>
                     </td>
                   </tr>
                 ))}
+                {products.length === 0 && (
+                  <tr>
+                    <td colSpan={4} className="text-center py-12 text-gray-400">
+                      <div className="text-5xl mb-2">📦</div>
+                      <div className="font-semibold">No products found</div>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
-}
-
-export async function getServerSideProps() {
-  try {
-    // Import data directly instead of fetching via HTTP
-    const { getAllProducts } = await import("../lib/products");
-    const products = getAllProducts();
-
-    const stats = {
-      totalProducts: products.length,
-      lowStock: products.filter((p) => p.inventory < 5).length,
-      totalValue: products.reduce((sum, p) => sum + p.price * p.inventory, 0),
-    };
-
-    return { props: { products, stats } };
-  } catch (error) {
-    return {
-      props: {
-        products: [],
-        stats: { totalProducts: 0, lowStock: 0, totalValue: 0 },
-      },
-    };
-  }
 }

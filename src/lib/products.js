@@ -1,13 +1,13 @@
-import products from "../data/products.json";
+import productsData from '../data/products.json';
 
 export function getAllProducts() {
-  return products;
+  return productsData;
 }
 
 export function getProductBySlug(slug) {
-  return products.find((p) => p.slug === slug);
+  return productsData.find(product => product.slug === slug);
 }
 
 export function getCategories() {
-  return [...new Set(products.map((p) => p.category))];
+  return [...new Set(productsData.map(product => product.category))];
 }
