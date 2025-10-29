@@ -1,21 +1,21 @@
-import { useState, useEffect } from 'react';
-import Layout from '../components/Layout';
-import ProductCard from '../components/ProductCard';
+import { useState, useEffect } from 'react'
+import Layout from '../components/Layout'
+import ProductCard from '../components/ProductCard'
 
 export default function Home() {
-  const [products, setProducts] = useState([]);
-  const [search, setSearch] = useState('');
+  const [products, setProducts] = useState([])
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     fetch('/api/products')
       .then(res => res.json())
-      .then(data => setProducts(data.data || []));
-  }, []);
+      .then(data => setProducts(data.data || []))
+  }, [])
 
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(search.toLowerCase()) ||
     product.description.toLowerCase().includes(search.toLowerCase())
-  );
+  )
 
   return (
     <Layout>
@@ -48,5 +48,5 @@ export default function Home() {
         )}
       </div>
     </Layout>
-  );
+  )
 }

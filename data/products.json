@@ -31,16 +31,5 @@
     "slug": "sony-headphones",
     "rating": 4.7,
     "reviews": 67
-  },
-  {
-    "id": "4",
-    "name": "Samsung Odyssey G9",
-    "description": "49\" Dual QHD curved gaming monitor with 240Hz refresh rate.",
-    "price": 124999,
-    "category": "Monitors",
-    "inventory": 5,
-    "slug": "samsung-monitor",
-    "rating": 4.5,
-    "reviews": 42
   }
 ]

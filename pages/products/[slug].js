@@ -1,17 +1,18 @@
-import { useRouter } from 'next/router';
-import Link from 'next/link';
-import Layout from '../../components/Layout';
-import { getProductBySlug, getAllProducts } from '../../lib/products';
+import { useRouter } from 'next/router'
+import Link from 'next/link'
+import Layout from '../../components/Layout'
+
+const products = require('../../data/products.json')
 
 export default function ProductDetail({ product }) {
-  const router = useRouter();
+  const router = useRouter()
 
   if (router.isFallback) {
     return (
       <Layout>
         <div className="p-8 text-center">Loading...</div>
       </Layout>
-    );
+    )
   }
 
   if (!product) {
@@ -22,12 +23,12 @@ export default function ProductDetail({ product }) {
           <Link href="/" className="text-blue-600 hover:underline">← Back to Home</Link>
         </div>
       </Layout>
-    );
+    )
   }
 
   const formatPrice = (price) => {
-    return `₹${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
-  };
+    return `₹${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+  }
 
   return (
     <Layout>
@@ -37,8 +38,7 @@ export default function ProductDetail({ product }) {
             <div className="md:w-1/2 bg-gray-200 rounded-lg h-64 flex items-center justify-center">
               <span className="text-6xl">
                 {product.category === 'Laptops' ? '💻' : 
-                 product.category === 'Phones' ? '📱' : 
-                 product.category === 'Audio' ? '🎧' : '🖥️'}
+                 product.category === 'Phones' ? '📱' : '🎧'}
               </span>
             </div>
             
@@ -75,29 +75,27 @@ export default function ProductDetail({ product }) {
         </div>
       </div>
     </Layout>
-  );
+  )
 }
 
 export async function getStaticPaths() {
-  const products = getAllProducts();
-  
   const paths = products.map(product => ({
     params: { slug: product.slug }
-  }));
+  }))
 
   return {
     paths,
     fallback: true,
-  };
+  }
 }
 
 export async function getStaticProps({ params }) {
-  const product = getProductBySlug(params.slug);
+  const product = products.find(p => p.slug === params.slug)
 
   return {
     props: {
       product: product || null
     },
     revalidate: 60
-  };
+  }
 }

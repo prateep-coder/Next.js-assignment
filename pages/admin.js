@@ -368,7 +368,7 @@ export default function AdminPanel() {
                 <div className="text-center py-12 text-gray-400">
                   <div className="text-6xl mb-2">📦</div>
                   <div className="font-semibold">No products found</div>
-                  <div className="text-xs">Add your first product!</div>
+                  <div classNaame="text-xs">Add your first product!</div>
                 </div>
               )}
             </div>
