@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 
-// Static data - no API calls
+// Static data
 const productsData = [
   {
     id: "1",
@@ -51,6 +51,15 @@ export default function Home() {
     return `₹${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
   }
 
+  const getCategoryIcon = (category) => {
+    const icons = {
+      'Laptops': '💻',
+      'Phones': '📱',
+      'Audio': '🎧'
+    }
+    return icons[category] || '📦'
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -84,11 +93,10 @@ export default function Home() {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProducts.map(product => (
-            <div key={product.id} className="bg-white rounded-lg shadow-md border border-gray-200">
-              <div className="h-48 bg-gray-200 flex items-center justify-center">
+            <div key={product.id} className="bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+              <div className="h-48 bg-gray-100 flex items-center justify-center">
                 <span className="text-4xl">
-                  {product.category === 'Laptops' ? '💻' : 
-                   product.category === 'Phones' ? '📱' : '🎧'}
+                  {getCategoryIcon(product.category)}
                 </span>
               </div>
               
@@ -100,6 +108,7 @@ export default function Home() {
                   <span className="text-xl font-bold text-green-600">{formatPrice(product.price)}</span>
                   <div className="flex items-center gap-1">
                     <span>⭐ {product.rating}</span>
+                    <span className="text-gray-500 text-sm">({product.reviews})</span>
                   </div>
                 </div>
 
@@ -117,7 +126,7 @@ export default function Home() {
                 </div>
 
                 <Link href={`/products/${product.slug}`}>
-                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold">
+                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold transition-colors">
                     View Details
                   </button>
                 </Link>
@@ -130,6 +139,7 @@ export default function Home() {
           <div className="text-center py-12">
             <div className="text-6xl mb-4">🔍</div>
             <h3 className="text-xl font-semibold text-gray-700 mb-2">No products found</h3>
+            <p className="text-gray-500">Try changing your search terms</p>
           </div>
         )}
       </div>
