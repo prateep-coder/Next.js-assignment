@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
-import products from "@/data/products.json";
+import { getAllProducts, getProductBySlug } from "../../lib/products";
 
-export default function ProductDetail({ product }) {
+export default function ProductDetail({ product, relatedProducts = [] }) {
   const router = useRouter();
 
   if (router.isFallback) {
@@ -123,22 +123,83 @@ export default function ProductDetail({ product }) {
           </div>
         </div>
       </div>
+
+      <div className="container mx-auto px-4 py-8">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">
+          Related Products
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {relatedProducts.length === 0 && (
+            <div className="col-span-full text-gray-500 text-center">
+              No related products found.
+            </div>
+          )}
+          {relatedProducts.map((product) => (
+            <div
+              key={product.id}
+              className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 overflow-hidden group"
+            >
+              <div className="h-48 bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center relative">
+                <div className="text-5xl drop-shadow">
+                  {product.category === "Laptops"
+                    ? "💻"
+                    : product.category === "Phones"
+                    ? "📱"
+                    : product.category === "Audio"
+                    ? "🎧"
+                    : "🖥️"}
+                </div>
+                <div className="absolute top-3 right-3">
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-bold shadow ${
+                      product.inventory > 10
+                        ? "bg-green-500 text-white"
+                        : product.inventory > 0
+                        ? "bg-yellow-500 text-white"
+                        : "bg-red-500 text-white"
+                    }`}
+                  >
+                    {product.inventory} left
+                  </span>
+                </div>
+              </div>
+              <div className="p-5">
+                <h3 className="font-semibold text-lg mb-2 line-clamp-1 group-hover:text-blue-700 transition">
+                  {product.name}
+                </h3>
+                <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                  {product.description}
+                </p>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xl font-bold text-green-600">
+                    {formatPrice(product.price)}
+                  </span>
+                  <div className="flex items-center gap-1">
+                    <span className="text-yellow-500">⭐</span>
+                    <span className="text-sm text-gray-600">
+                      {product.rating}
+                    </span>
+                  </div>
+                </div>
+                <Link href={`/products/${product.slug}`}>
+                  <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-2 rounded-lg font-semibold transition-colors shadow">
+                    View Details
+                  </button>
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
 
 export async function getStaticPaths() {
-  const products = [
-    { slug: "macbook-pro" },
-    { slug: "iphone-15-pro" },
-    { slug: "sony-headphones" },
-    { slug: "samsung-monitor" },
-  ];
-
+  const products = getAllProducts();
   const paths = products.map((product) => ({
     params: { slug: product.slug },
   }));
-
   return {
     paths,
     fallback: true,
@@ -147,22 +208,26 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   try {
-    const res = await fetch(
-      `http://localhost:3000/api/products?slug=${params.slug}`
-    );
-    const data = await res.json();
-
-    if (!data.success) {
+    const product = getProductBySlug(params.slug);
+    if (!product) {
       return { notFound: true };
     }
+    // Find related products (same category, not itself, max 3)
+    const allProducts = getAllProducts();
+    const relatedProducts = allProducts
+      .filter((p) => p.category === product.category && p.slug !== product.slug)
+      .slice(0, 3);
 
     return {
       props: {
-        product: data.data,
+        product,
+        relatedProducts,
       },
       revalidate: 60,
     };
   } catch (error) {
+    console.log('not found ', error);
+    
     return { notFound: true };
   }
 }
