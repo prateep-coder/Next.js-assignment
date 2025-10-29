@@ -2,7 +2,8 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Layout from '../../components/Layout'
 
-const products = require('../../data/products.json')
+// Import data directly
+import productsData from '../../data/products.json'
 
 export default function ProductDetail({ product }) {
   const router = useRouter()
@@ -79,7 +80,7 @@ export default function ProductDetail({ product }) {
 }
 
 export async function getStaticPaths() {
-  const paths = products.map(product => ({
+  const paths = productsData.map(product => ({
     params: { slug: product.slug }
   }))
 
@@ -90,12 +91,11 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const product = products.find(p => p.slug === params.slug)
+  const product = productsData.find(p => p.slug === params.slug)
 
   return {
     props: {
       product: product || null
-    },
-    revalidate: 60
+    }
   }
 }

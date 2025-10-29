@@ -1,16 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Layout from '../components/Layout'
 import ProductCard from '../components/ProductCard'
 
-export default function Home() {
-  const [products, setProducts] = useState([])
-  const [search, setSearch] = useState('')
+// Import data directly instead of API call
+import productsData from '../data/products.json'
 
-  useEffect(() => {
-    fetch('/api/products')
-      .then(res => res.json())
-      .then(data => setProducts(data.data || []))
-  }, [])
+export default function Home({ products: initialProducts }) {
+  const [products, setProducts] = useState(initialProducts)
+  const [search, setSearch] = useState('')
 
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -49,4 +46,13 @@ export default function Home() {
       </div>
     </Layout>
   )
+}
+
+// Fixed: Direct import instead of API call
+export async function getStaticProps() {
+  return {
+    props: {
+      products: productsData
+    }
+  }
 }

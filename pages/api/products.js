@@ -1,4 +1,4 @@
-const products = require('../../data/products.json')
+import productsData from '../../data/products.json'
 
 export default function handler(req, res) {
   const { method, query } = req
@@ -7,7 +7,7 @@ export default function handler(req, res) {
     const { slug } = query
     
     if (slug) {
-      const product = products.find(p => p.slug === slug)
+      const product = productsData.find(p => p.slug === slug)
       return product ? 
         res.json({ success: true, data: product }) : 
         res.status(404).json({ error: 'Product not found' })
@@ -15,10 +15,10 @@ export default function handler(req, res) {
 
     res.json({ 
       success: true, 
-      data: products,
+      data: productsData,
       meta: {
-        total: products.length,
-        categories: [...new Set(products.map(p => p.category))]
+        total: productsData.length,
+        categories: [...new Set(productsData.map(p => p.category))]
       }
     })
   } else {
