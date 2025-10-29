@@ -1,11 +1,11 @@
-import Link from 'next/link'
+import Link from "next/link";
 
 export default function Dashboard({ products, stats }) {
-  const lowStock = products.filter(p => p.inventory < 5)
+  const lowStock = products.filter((p) => p.inventory < 5);
 
   const formatPrice = (price) => {
-    return `₹${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
-  }
+    return `₹${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -16,9 +16,18 @@ export default function Dashboard({ products, stats }) {
               🛍️ TechStore
             </Link>
             <nav className="flex gap-6">
-              <Link href="/" className="hover:text-blue-200">Home</Link>
-              <Link href="/dashboard" className="font-semibold border-b-2 border-white pb-1">Dashboard</Link>
-              <Link href="/admin" className="hover:text-blue-200">Admin</Link>
+              <Link href="/" className="hover:text-blue-200">
+                Home
+              </Link>
+              <Link
+                href="/dashboard"
+                className="font-semibold border-b-2 border-white pb-1"
+              >
+                Dashboard
+              </Link>
+              <Link href="/admin" className="hover:text-blue-200">
+                Admin
+              </Link>
             </nav>
           </div>
         </div>
@@ -28,15 +37,21 @@ export default function Dashboard({ products, stats }) {
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white p-6 rounded-lg shadow text-center">
-            <div className="text-3xl font-bold text-blue-600">{stats.totalProducts}</div>
+            <div className="text-3xl font-bold text-blue-600">
+              {stats.totalProducts}
+            </div>
             <div className="text-gray-600">Total Products</div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow text-center">
-            <div className="text-3xl font-bold text-red-600">{stats.lowStock}</div>
+            <div className="text-3xl font-bold text-red-600">
+              {stats.lowStock}
+            </div>
             <div className="text-gray-600">Low Stock</div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow text-center">
-            <div className="text-3xl font-bold text-green-600">{formatPrice(stats.totalValue)}</div>
+            <div className="text-3xl font-bold text-green-600">
+              {formatPrice(stats.totalValue)}
+            </div>
             <div className="text-gray-600">Total Value</div>
           </div>
         </div>
@@ -44,12 +59,19 @@ export default function Dashboard({ products, stats }) {
         {/* Low Stock Alert */}
         {lowStock.length > 0 && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-            <h3 className="font-semibold text-yellow-800 mb-3">⚠️ Low Stock Alert</h3>
+            <h3 className="font-semibold text-yellow-800 mb-3">
+              ⚠️ Low Stock Alert
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {lowStock.map(product => (
-                <div key={product.id} className="bg-white rounded p-3 border border-yellow-200">
+              {lowStock.map((product) => (
+                <div
+                  key={product.id}
+                  className="bg-white rounded p-3 border border-yellow-200"
+                >
                   <div className="font-medium">{product.name}</div>
-                  <div className="text-red-600 text-sm">Only {product.inventory} left</div>
+                  <div className="text-red-600 text-sm">
+                    Only {product.inventory} left
+                  </div>
                 </div>
               ))}
             </div>
@@ -72,21 +94,33 @@ export default function Dashboard({ products, stats }) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {products.map(product => (
+                {products.map((product) => (
                   <tr key={product.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <div className="font-medium">{product.name}</div>
-                      <div className="text-sm text-gray-500">{product.category}</div>
+                      <div className="text-sm text-gray-500">
+                        {product.category}
+                      </div>
                     </td>
-                    <td className="px-6 py-4 font-semibold">{formatPrice(product.price)}</td>
+                    <td className="px-6 py-4 font-semibold">
+                      {formatPrice(product.price)}
+                    </td>
                     <td className="px-6 py-4">{product.inventory}</td>
                     <td className="px-6 py-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                        product.inventory > 10 ? 'bg-green-100 text-green-800' :
-                        product.inventory > 0 ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800'
-                      }`}>
-                        {product.inventory > 10 ? 'In Stock' : product.inventory > 0 ? 'Low Stock' : 'Out of Stock'}
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                          product.inventory > 10
+                            ? "bg-green-100 text-green-800"
+                            : product.inventory > 0
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {product.inventory > 10
+                          ? "In Stock"
+                          : product.inventory > 0
+                          ? "Low Stock"
+                          : "Out of Stock"}
                       </span>
                     </td>
                   </tr>
@@ -97,28 +131,28 @@ export default function Dashboard({ products, stats }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export async function getServerSideProps() {
   try {
-    const res = await fetch('http://localhost:3000/api/products')
-    const data = await res.json()
+    // Import data directly instead of fetching via HTTP
+    const { getAllProducts } = await import("../lib/products");
+    const products = getAllProducts();
 
-    const products = data.data || []
     const stats = {
       totalProducts: products.length,
-      lowStock: products.filter(p => p.inventory < 5).length,
-      totalValue: products.reduce((sum, p) => sum + (p.price * p.inventory), 0)
-    }
+      lowStock: products.filter((p) => p.inventory < 5).length,
+      totalValue: products.reduce((sum, p) => sum + p.price * p.inventory, 0),
+    };
 
-    return { props: { products, stats } }
+    return { props: { products, stats } };
   } catch (error) {
     return {
       props: {
         products: [],
-        stats: { totalProducts: 0, lowStock: 0, totalValue: 0 }
-      }
-    }
+        stats: { totalProducts: 0, lowStock: 0, totalValue: 0 },
+      },
+    };
   }
 }
