@@ -1,39 +1,46 @@
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
-// Static data
-const productsData = [
-  {
-    id: "1",
-    name: "MacBook Pro 16\"",
-    price: 249999,
-    category: "Laptops",
-    inventory: 15
-  },
-  {
-    id: "2",
-    name: "iPhone 15 Pro",
-    price: 134900,
-    category: "Phones",
-    inventory: 8
-  },
-  {
-    id: "3",
-    name: "Sony WH-1000XM5",
-    price: 29990,
-    category: "Audio",
-    inventory: 25
-  }
-]
-
 export default function Dashboard() {
+  const [products, setProducts] = useState([])
+
+  // Client-side only - won't run during build
+  useEffect(() => {
+    // Static data - no API calls
+    const productsData = [
+      {
+        id: "1",
+        name: "MacBook Pro 16\"",
+        price: 249999,
+        category: "Laptops",
+        inventory: 15
+      },
+      {
+        id: "2",
+        name: "iPhone 15 Pro",
+        price: 134900,
+        category: "Phones",
+        inventory: 8
+      },
+      {
+        id: "3",
+        name: "Sony WH-1000XM5",
+        price: 29990,
+        category: "Audio",
+        inventory: 25
+      }
+    ]
+    setProducts(productsData)
+  }, [])
+
   const formatPrice = (price) => {
     return `₹${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
   }
 
   const stats = {
-    totalProducts: productsData.length,
-    lowStock: productsData.filter(p => p.inventory < 5).length,
-    totalValue: productsData.reduce((sum, p) => sum + (p.price * p.inventory), 0)
+    totalProducts: products.length,
+    lowStock: products.filter(p => p.inventory < 5).length,
+    totalValue: products.reduce((sum, p) => sum + (p.price * p.inventory), 0)
   }
 
   return (
@@ -86,7 +93,7 @@ export default function Dashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {productsData.map(product => (
+                {products.map(product => (
                   <tr key={product.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <div className="font-medium">{product.name}</div>

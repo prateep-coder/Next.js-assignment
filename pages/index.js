@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 
-// Static data
+// Static data - no API calls
 const productsData = [
   {
     id: "1",

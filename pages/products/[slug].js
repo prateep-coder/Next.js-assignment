@@ -41,11 +41,19 @@ const productsData = [
   }
 ]
 
-export default function ProductDetail() {
+export default function ProductDetail({ product }) {
   const router = useRouter()
-  const { slug } = router.query
 
-  const product = productsData.find(p => p.slug === slug)
+  if (router.isFallback) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading product...</p>
+        </div>
+      </div>
+    )
+  }
 
   if (!product) {
     return (
@@ -152,7 +160,7 @@ export default function ProductDetail() {
   )
 }
 
-// Static generation
+// Static generation - NO API CALLS
 export async function getStaticPaths() {
   const paths = productsData.map(product => ({
     params: { slug: product.slug }
@@ -160,16 +168,24 @@ export async function getStaticPaths() {
 
   return {
     paths,
-    fallback: false
+    fallback: true
   }
 }
 
 export async function getStaticProps({ params }) {
+  // Direct data access - no API calls
   const product = productsData.find(p => p.slug === params.slug)
+
+  if (!product) {
+    return {
+      notFound: true
+    }
+  }
 
   return {
     props: {
-      product: product || null
-    }
+      product
+    },
+    revalidate: 60
   }
 }
