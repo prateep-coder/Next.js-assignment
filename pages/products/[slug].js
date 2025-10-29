@@ -1,63 +1,57 @@
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import Layout from '../../components/Layout'
 
-// Direct data - no import
+// Static data - same as home page
 const productsData = [
   {
-    "id": "1",
-    "name": "MacBook Pro 16\"",
-    "description": "Supercharged by M2 Pro and M2 Max, MacBook Pro takes its power and efficiency further than ever.",
-    "price": 249999,
-    "category": "Laptops",
-    "inventory": 15,
-    "slug": "macbook-pro",
-    "rating": 4.8,
-    "reviews": 124
+    id: "1",
+    name: "MacBook Pro 16\"",
+    description: "Supercharged by M2 Pro and M2 Max, MacBook Pro takes its power and efficiency further than ever.",
+    price: 249999,
+    category: "Laptops",
+    inventory: 15,
+    slug: "macbook-pro",
+    rating: 4.8,
+    reviews: 124
   },
   {
-    "id": "2",
-    "name": "iPhone 15 Pro",
-    "description": "Forged from titanium and featuring the groundbreaking A17 Pro chip.",
-    "price": 134900,
-    "category": "Phones",
-    "inventory": 8,
-    "slug": "iphone-15-pro",
-    "rating": 4.6,
-    "reviews": 89
+    id: "2",
+    name: "iPhone 15 Pro",
+    description: "Forged from titanium and featuring the groundbreaking A17 Pro chip.",
+    price: 134900,
+    category: "Phones",
+    inventory: 8,
+    slug: "iphone-15-pro",
+    rating: 4.6,
+    reviews: 89
   },
   {
-    "id": "3",
-    "name": "Sony WH-1000XM5",
-    "description": "Industry-leading noise cancellation with premium sound quality.",
-    "price": 29990,
-    "category": "Audio",
-    "inventory": 25,
-    "slug": "sony-headphones",
-    "rating": 4.7,
-    "reviews": 67
+    id: "3",
+    name: "Sony WH-1000XM5",
+    description: "Industry-leading noise cancellation with premium sound quality.",
+    price: 29990,
+    category: "Audio",
+    inventory: 25,
+    slug: "sony-headphones",
+    rating: 4.7,
+    reviews: 67
   }
 ]
 
-export default function ProductDetail({ product }) {
+export default function ProductDetail() {
   const router = useRouter()
+  const { slug } = router.query
 
-  if (router.isFallback) {
-    return (
-      <Layout>
-        <div className="p-8 text-center">Loading...</div>
-      </Layout>
-    )
-  }
+  const product = productsData.find(p => p.slug === slug)
 
   if (!product) {
     return (
-      <Layout>
-        <div className="p-8 text-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Product Not Found</h1>
           <Link href="/" className="text-blue-600 hover:underline">← Back to Home</Link>
         </div>
-      </Layout>
+      </div>
     )
   }
 
@@ -66,7 +60,21 @@ export default function ProductDetail({ product }) {
   }
 
   return (
-    <Layout>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-blue-600 text-white shadow-lg">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex gap-4">
+              <button onClick={() => router.back()} className="hover:underline">← Back</button>
+              <Link href="/" className="hover:underline">Home</Link>
+            </div>
+            <Link href="/" className="text-xl font-bold">🛍️ TechStore</Link>
+          </div>
+        </div>
+      </header>
+
+      {/* Product Details */}
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-md max-w-4xl mx-auto p-6">
           <div className="flex flex-col md:flex-row gap-6">
@@ -109,10 +117,11 @@ export default function ProductDetail({ product }) {
           </div>
         </div>
       </div>
-    </Layout>
+    </div>
   )
 }
 
+// Static paths for build
 export async function getStaticPaths() {
   const paths = productsData.map(product => ({
     params: { slug: product.slug }
@@ -120,22 +129,17 @@ export async function getStaticPaths() {
 
   return {
     paths,
-    fallback: false // Changed to false for better build
+    fallback: false
   }
 }
 
+// Static props for build
 export async function getStaticProps({ params }) {
   const product = productsData.find(p => p.slug === params.slug)
 
-  if (!product) {
-    return {
-      notFound: true
-    }
-  }
-
   return {
     props: {
-      product
+      product: product || null
     }
   }
 }
