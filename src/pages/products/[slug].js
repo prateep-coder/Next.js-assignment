@@ -226,8 +226,6 @@ export async function getStaticProps({ params }) {
       revalidate: 60,
     };
   } catch (error) {
-    console.log('not found ', error);
-    
     return { notFound: true };
   }
 }
